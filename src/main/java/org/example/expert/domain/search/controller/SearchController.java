@@ -21,13 +21,13 @@ public class SearchController {
     @GetMapping("/search")
     public Page<SearchTodoResponse> getTodos(
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) LocalDateTime startDae,
+            @RequestParam(required = false) LocalDateTime startDate,
             @RequestParam(required = false) LocalDateTime endDate,
             @RequestParam(required = false) String nickname,
             @RequestParam(defaultValue = "0") int pageNum,
             @RequestParam(defaultValue = "10") int pageSize
-    ){
+    ) {
         Pageable pageable = PageRequest.of(pageNum, pageSize);
-        return searchService.getTodos(keyword, startDae, endDate, nickname, pageable);
+        return searchService.getTodos(keyword, startDate, endDate, nickname, pageable);
     }
 }

@@ -17,8 +17,12 @@ public class SearchService {
     private final TodoRepository todoRepository;
 
     @Transactional(readOnly = true)
-    public Page<SearchTodoResponse> getTodos(String keyword, LocalDateTime startDae, LocalDateTime endDate, String nickname, Pageable pageable) {
-        return todoRepository.getTodoWithCondition(keyword, startDae, endDate, nickname, pageable);
-
+    public Page<SearchTodoResponse> getTodos(String keyword,
+                                             LocalDateTime startDate,
+                                             LocalDateTime endDate,
+                                             String nickname,
+                                             Pageable pageable
+    ) {
+        return todoRepository.getTodoWithCondition(keyword, startDate, endDate, nickname, pageable);
     }
 }

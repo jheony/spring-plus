@@ -12,5 +12,5 @@ public interface TodoRepositoryCustom {
 
     Optional<Todo> getTodo(Long todoId);
 
-    Page<SearchTodoResponse> getTodoWithCondition(String keyword, LocalDateTime startDae, LocalDateTime endDate, String nickname, Pageable pageable);
+    Page<SearchTodoResponse> getTodoWithCondition(String keyword, LocalDateTime startDate, LocalDateTime endDate, String nickname, Pageable pageable);
 }

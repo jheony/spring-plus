@@ -44,7 +44,7 @@ public class TodoRepositoryImpl implements TodoRepositoryCustom {
     @Override
     public Page<SearchTodoResponse> getTodoWithCondition(
             String keyword,
-            LocalDateTime startDae,
+            LocalDateTime startDate,
             LocalDateTime endDate,
             String nickname,
             Pageable pageable
@@ -59,9 +59,10 @@ public class TodoRepositoryImpl implements TodoRepositoryCustom {
                 .from(todo)
                 .leftJoin(manager).on(manager.todo.id.eq(todo.id))
                 .leftJoin(comment).on(comment.todo.id.eq(todo.id))
+                .leftJoin(user).on(user.id.eq(manager.user.id))
                 .where(
                         keywordEq(keyword),
-                        startDateEq(startDae),
+                        startDateEq(startDate),
                         endDateEq(endDate),
                         nicknameEq(nickname)
                 )
@@ -76,9 +77,10 @@ public class TodoRepositoryImpl implements TodoRepositoryCustom {
                 .from(todo)
                 .leftJoin(manager).on(manager.todo.id.eq(todo.id))
                 .leftJoin(comment).on(comment.todo.id.eq(todo.id))
+                .leftJoin(user).on(user.id.eq(manager.user.id))
                 .where(
                         keywordEq(keyword),
-                        startDateEq(startDae),
+                        startDateEq(startDate),
                         endDateEq(endDate),
                         nicknameEq(nickname)
                 )
@@ -104,6 +106,6 @@ public class TodoRepositoryImpl implements TodoRepositoryCustom {
     }
 
     private BooleanExpression nicknameEq(String nickname) {
-        return (nickname != null) ? manager.user.id.eq(user.id).and(user.nickname.containsIgnoreCase(nickname)) : null;
+        return (nickname != null) ? user.nickname.containsIgnoreCase(nickname) : null;
     }
 }
