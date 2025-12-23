@@ -4,10 +4,10 @@ spring:
       spring-plus
 
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${DATA_SOURCE_URL}
     username: ${DATA_SOURCE_USERNAME}
     password: ${DATA_SOURCE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
@@ -22,8 +22,28 @@ spring:
   config:
     import: optional:file:.env
 
-
-
 jwt:
   secret:
     key: ${JWT_SECRET_KEY}
+
+management:
+  endpoints:
+    enabled-by-default: false
+    jmx:
+      exposure:
+        exclude: "*"
+    web:
+      exposure:
+        include: info, health
+      path-mapping:
+        health:
+          health-check
+  endpoint:
+    info:
+      enabled: true
+    health:
+      enabled: true
+      show-details: always
+  health:
+    db:
+      enabled: true
