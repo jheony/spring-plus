@@ -49,6 +49,9 @@ dependencies {
     implementation 'io.github.openfeign.querydsl:querydsl-core:6.12'
     implementation 'io.github.openfeign.querydsl:querydsl-jpa:6.12'
     annotationProcessor 'io.github.openfeign.querydsl:querydsl-apt:6.12:jpa'
+
+    // s3
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
 
 tasks.named('test') {

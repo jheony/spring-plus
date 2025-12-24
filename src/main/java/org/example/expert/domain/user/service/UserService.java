@@ -2,13 +2,19 @@ package org.example.expert.domain.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.expert.config.PasswordEncoder;
+import org.example.expert.domain.common.S3Uploader;
+import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.common.exception.InvalidRequestException;
 import org.example.expert.domain.user.dto.request.UserChangePasswordRequest;
+import org.example.expert.domain.user.dto.response.UserGetProfileImagesResponse;
 import org.example.expert.domain.user.dto.response.UserResponse;
 import org.example.expert.domain.user.entity.User;
 import org.example.expert.domain.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +23,15 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final S3Uploader s3Uploader;
+
+    private static void validateNewPassword(UserChangePasswordRequest userChangePasswordRequest) {
+        if (userChangePasswordRequest.getNewPassword().length() < 8 ||
+                !userChangePasswordRequest.getNewPassword().matches(".*\\d.*") ||
+                !userChangePasswordRequest.getNewPassword().matches(".*[A-Z].*")) {
+            throw new InvalidRequestException("새 비밀번호는 8자 이상이어야 하고, 숫자와 대문자를 포함해야 합니다.");
+        }
+    }
 
     public UserResponse getUser(long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new InvalidRequestException("User not found"));
@@ -41,11 +56,20 @@ public class UserService {
         user.changePassword(passwordEncoder.encode(userChangePasswordRequest.getNewPassword()));
     }
 
-    private static void validateNewPassword(UserChangePasswordRequest userChangePasswordRequest) {
-        if (userChangePasswordRequest.getNewPassword().length() < 8 ||
-                !userChangePasswordRequest.getNewPassword().matches(".*\\d.*") ||
-                !userChangePasswordRequest.getNewPassword().matches(".*[A-Z].*")) {
-            throw new InvalidRequestException("새 비밀번호는 8자 이상이어야 하고, 숫자와 대문자를 포함해야 합니다.");
-        }
+    @Transactional
+    public void uploadProfileImage(AuthUser authUser, MultipartFile image) throws IOException {
+        User user = userRepository.findById(authUser.getId()).orElseThrow(() -> new InvalidRequestException("not found user"));
+
+        user.updateProfileImage(
+                image.isEmpty()
+                        ? null
+                        : s3Uploader.upload(image, "profileImages")
+        );
+    }
+
+    public UserGetProfileImagesResponse getProfileImage(AuthUser authUser) {
+        User user = userRepository.findById(authUser.getId()).orElseThrow(() -> new InvalidRequestException("not found user"));
+
+        return new UserGetProfileImagesResponse(user.getProfileImage());
     }
 }

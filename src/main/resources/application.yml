@@ -47,3 +47,15 @@ management:
   health:
     db:
       enabled: true
+
+cloud:
+  aws:
+    s3:
+      bucket: heo0on-bucket
+    stack:
+      auto: false
+    region:
+      static: ap-northeast-2
+    credentials:
+      access-key: ${ACCESS_KEY}
+      secret-key: ${SECRET_KEY}

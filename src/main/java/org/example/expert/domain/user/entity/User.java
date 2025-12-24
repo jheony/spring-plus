@@ -13,12 +13,14 @@ import org.example.expert.domain.user.enums.UserRole;
 @Table(name = "users")
 public class User extends Timestamped {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(unique = true)
     private String email;
     private String password;
     private String nickname;
+    private String profileImage;
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
@@ -46,5 +48,9 @@ public class User extends Timestamped {
 
     public void updateRole(UserRole userRole) {
         this.userRole = userRole;
+    }
+
+    public void updateProfileImage(String image) {
+        this.profileImage = image;
     }
 }
