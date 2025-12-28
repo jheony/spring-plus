@@ -93,7 +93,7 @@ class AuthServiceTest {
                                 public void setValues(PreparedStatement ps, int i) throws SQLException {
                                     ps.setString(1, "email" + Math.random() + "@test.com");
                                     ps.setString(2, "password");
-                                    ps.setString(3, "nickname");
+                                    ps.setString(3, "nickname" + Math.random());
                                     ps.setString(4, "USER");
                                 }
 
