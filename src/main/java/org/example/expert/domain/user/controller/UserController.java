@@ -5,6 +5,7 @@ import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.user.dto.request.UserChangePasswordRequest;
 import org.example.expert.domain.user.dto.response.UserGetProfileImagesResponse;
 import org.example.expert.domain.user.dto.response.UserResponse;
+import org.example.expert.domain.user.dto.response.UserSearchResponse;
 import org.example.expert.domain.user.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -43,5 +44,11 @@ public class UserController {
     public UserGetProfileImagesResponse getProfileImage(@AuthenticationPrincipal AuthUser authUser) {
 
         return userService.getProfileImage(authUser);
+    }
+
+    @GetMapping("/users")
+    public UserSearchResponse searchUser(@RequestParam String nickname){
+
+        return userService.searchUser(nickname);
     }
 }

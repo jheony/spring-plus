@@ -8,6 +8,7 @@ import org.example.expert.domain.common.exception.InvalidRequestException;
 import org.example.expert.domain.user.dto.request.UserChangePasswordRequest;
 import org.example.expert.domain.user.dto.response.UserGetProfileImagesResponse;
 import org.example.expert.domain.user.dto.response.UserResponse;
+import org.example.expert.domain.user.dto.response.UserSearchResponse;
 import org.example.expert.domain.user.entity.User;
 import org.example.expert.domain.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -71,5 +72,12 @@ public class UserService {
         User user = userRepository.findById(authUser.getId()).orElseThrow(() -> new InvalidRequestException("not found user"));
 
         return new UserGetProfileImagesResponse(user.getProfileImage());
+    }
+
+    public UserSearchResponse searchUser(String findNickname){
+
+        User user = userRepository.findByNickname(findNickname).orElseThrow(() -> new InvalidRequestException("not found user"));
+
+        return new UserSearchResponse(user.getId(), user.getEmail(), user.getNickname());
     }
 }
