@@ -42,4 +42,22 @@
 GET
 /actuator/health-check
 
+--- 
 ### 유저 검색 속도 개선기
+#### 쿼리 메서드
+- findByNickname
+- 소요 시간: 1.78ms
+<img width="1280" height="330" alt="image" src="https://github.com/user-attachments/assets/41b58abd-afd0-4457-8dd5-2c384a18c288" />
+
+#### 인덱싱
+- indexes = @Index(name = "idx_nickname", columnList = "nickname")
+- 소요 시간: 19ms
+<img width="1280" height="376" alt="image" src="https://github.com/user-attachments/assets/f861f3e4-4f50-45f7-b33b-958c572ebcd5" />
+
+
+#### Redis cache
+- 소요 시간: 1.75ms -> 8ms
+<img width="1280" height="204" alt="image" src="https://github.com/user-attachments/assets/05c07527-d7d1-4d62-98f7-09b996f070f4" />
+<img width="1280" height="194" alt="image" src="https://github.com/user-attachments/assets/32a593b6-68bf-4a65-bb69-44bdb3b37c21" />
+
+
