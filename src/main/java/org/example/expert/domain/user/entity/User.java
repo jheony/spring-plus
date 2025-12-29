@@ -10,7 +10,7 @@ import org.example.expert.domain.user.enums.UserRole;
 @Getter
 @Entity
 @NoArgsConstructor
-@Table(name = "users",indexes = @Index(name = "idx_nickname", columnList = "nickname"))
+@Table(name = "users")
 public class User extends Timestamped {
 
     @Id

@@ -22,6 +22,10 @@ spring:
   config:
     import: optional:file:.env
 
+  cache:
+    caffeine:
+      spec: maximumSize=100,expireAfterWrite=6000s
+
 jwt:
   secret:
     key: ${JWT_SECRET_KEY}
