@@ -11,7 +11,6 @@ import org.example.expert.domain.user.dto.response.UserResponse;
 import org.example.expert.domain.user.dto.response.UserSearchResponse;
 import org.example.expert.domain.user.entity.User;
 import org.example.expert.domain.user.repository.UserRepository;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +25,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final S3Uploader s3Uploader;
+    private final UserCacheService userCacheService;
 
     private static void validateNewPassword(UserChangePasswordRequest userChangePasswordRequest) {
         if (userChangePasswordRequest.getNewPassword().length() < 8 ||
@@ -75,11 +75,19 @@ public class UserService {
         return new UserGetProfileImagesResponse(user.getProfileImage());
     }
 
-    @Cacheable(value = "userCache", key = "'nickname: ' + #nickname")
-    public UserSearchResponse searchUser(String nickname){
+    public UserSearchResponse searchUser(String nickname) {
+
+        UserSearchResponse cached = userCacheService.getUserCache(nickname);
+
+        if (cached != null) {
+            return cached;
+        }
 
         User user = userRepository.findByNickname(nickname).orElseThrow(() -> new InvalidRequestException("not found user"));
+        UserSearchResponse response = new UserSearchResponse(user.getId(), user.getEmail(), user.getNickname());
 
-        return new UserSearchResponse(user.getId(), user.getEmail(), user.getNickname());
+        userCacheService.saveUserCache(nickname, response);
+
+        return response;
     }
 }
