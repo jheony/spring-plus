@@ -16,11 +16,8 @@ public class Log {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private Long todoId;
-
     private Long managerId;
-
     private boolean isSuccess;
 
     @CreatedDate

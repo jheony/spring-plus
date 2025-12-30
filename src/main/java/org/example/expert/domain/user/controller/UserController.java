@@ -28,7 +28,8 @@ public class UserController {
     @PutMapping("/users")
     public void changePassword(
             @AuthenticationPrincipal AuthUser authUser,
-            @RequestBody UserChangePasswordRequest userChangePasswordRequest) {
+            @RequestBody UserChangePasswordRequest userChangePasswordRequest
+    ) {
         userService.changePassword(authUser.getId(), userChangePasswordRequest);
     }
 

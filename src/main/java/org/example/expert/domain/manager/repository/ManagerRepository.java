@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface ManagerRepository extends JpaRepository<Manager, Long> {
+
     @Query("SELECT m FROM Manager m JOIN FETCH m.user WHERE m.todo.id = :todoId")
     List<Manager> findByTodoIdWithUser(@Param("todoId") Long todoId);
 

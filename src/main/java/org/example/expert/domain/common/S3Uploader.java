@@ -23,7 +23,6 @@ public class S3Uploader {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    // MultipartFile을 전달받아 File로 전환한 후 S3에 업로드
     public String upload(MultipartFile multipartFile, String dirName) throws IOException {
 
         File uploadFile = convert(multipartFile).orElseThrow();
@@ -36,7 +35,7 @@ public class S3Uploader {
         String fileName = dirName + "/" + uploadFile.getName();
         String uploadImageUrl = putS3(uploadFile, fileName);
 
-        removeNewFile(uploadFile); // convert() 과정에서 로컬에 생성된 파일 삭제
+        removeNewFile(uploadFile);
 
         return uploadImageUrl;
     }
@@ -44,17 +43,16 @@ public class S3Uploader {
     private String putS3(File uploadFile, String fileName) {
 
         amazonS3Client.putObject(
-                new PutObjectRequest(bucket, fileName, uploadFile) // PublicRead 권한으로 upload
+                new PutObjectRequest(bucket, fileName, uploadFile)
         );
 
-        return amazonS3Client.getUrl(bucket, fileName).toString(); // File의 URL return
+        return amazonS3Client.getUrl(bucket, fileName).toString();
     }
 
     private void removeNewFile(File targetFile) {
 
         String name = targetFile.getName();
 
-        // convert() 과정에서 로컬에 생성된 파일을 삭제
         if (targetFile.delete()) {
             log.info(name + "파일 삭제 완료");
         } else {
@@ -64,21 +62,17 @@ public class S3Uploader {
 
     public Optional<File> convert(MultipartFile multipartFile) throws IOException {
 
-        // 기존 파일 이름으로 새로운 File 객체 생성
-        // 해당 객체는 프로그램이 실행되는 로컬 디렉토리(루트 디렉토리)에 위치하게 됨
         File convertFile = new File(multipartFile.getOriginalFilename());
 
-        if (convertFile.createNewFile()) { // 해당 경로에 파일이 없을 경우, 새 파일 생성
+        if (convertFile.createNewFile()) {
 
             try (FileOutputStream fos = new FileOutputStream(convertFile)) {
 
-                // multipartFile의 내용을 byte로 가져와서 write
                 fos.write(multipartFile.getBytes());
             }
             return Optional.of(convertFile);
         }
 
-        // 새파일이 성공적으로 생성되지 않았다면, 비어있는 Optional 객체를 반환
         return Optional.empty();
     }
 }
